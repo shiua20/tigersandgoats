@@ -1,0 +1,67 @@
+label = ['a1','a2','a3','b0','b1','b2','b3','b4','c1',
+                'c2','c3','c4','d1','d2','d3','d4','e1','e2','e3','e4','f1','f2','f3']
+
+def list_to_dict(board): #changes the list format back to dictionary format
+    XO=[]
+    for i in board:
+        if i==1:
+            XO.append('O')
+        elif i==2:
+            XO.append('X')
+        else:
+            XO.append(())
+    newdict=dict(zip(label, XO))
+    #print(newdict)
+    return(newdict)
+
+
+def dict_to_list(dict1): #changes dictionary format to list to pass to future states
+    listn=list(dict1.values())
+    listn.insert(3, listn.pop(0))
+    for i in range(len(listn)):
+        if listn[i] =='X':
+            listn[i]=2
+        elif listn[i]=='O':
+            listn[i]=1
+        else:
+            listn[i]=0
+    return(listn)
+
+def phasecheck(board): #checks which phase the game is in
+    if board.count(1)>=15:
+        return(1)
+    else:
+        return(0)
+
+def future_states(board): #takes a list as inputs and outputs a list of dictionaries
+    state_f=[]
+    for i in range(len(board)):
+        boardcopy=board.copy()
+        if phasecheck(board)==0 and board[i]==0:
+            boardcopy[i]=1
+            #print(boardcopy)
+            state_f.append(boardcopy)
+        elif phasecheck(board)==1 and board[i]==1:
+            count=0
+            for j in range(len(boardcopy)):
+                boardcopy=board.copy()
+                if boardcopy[j]==0:
+                    boardcopy[i]=0
+                    boardcopy[j]=1
+                    state_f.append(boardcopy)
+                    count+=1
+                    #print()
+                else:
+                    pass
+            print('goat in position:', i, 'has', count, 'moves')
+    #print(len(state_f))
+    return(state_f)
+
+
+
+testcase={'b0': 'X', 'a1': (), 'a2': (), 'a3': (), 'b1': (), 'b2': (), 'b3': (), 'b4': (), 'c1': 'X', 'c2': (), 'c3': 'O', 'c4': (), 'd1': (), 'd2': (), 'd3': (), 'd4': (), 'e1': 'X', 'e2': (), 'e3': (), 'e4': (), 'f1': (), 'f2': (), 'f3': ()}
+testlist=dict_to_list(testcase) #changes the dict to list format 
+future_states(testlist) #iterates through the list and generates future moves
+
+for i in future_states(dict_to_list(testcase)):
+    print(list_to_dict(i),'\n')
